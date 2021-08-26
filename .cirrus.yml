@@ -23,7 +23,7 @@ global_compute_template: &GLOBAL_COMPUTE_TEMPLATE
   image_project: cirrus-images
   image: family/docker-builder
   platform: linux
-  cpu: 8
+  cpu: 16
   memory: 8G
 
 setup_task_template: &SETUP_TASK_TEMPLATE
