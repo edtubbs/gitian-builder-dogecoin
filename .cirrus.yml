@@ -1,7 +1,7 @@
 ### Global defaults
 env:
-  URL: https://github.com/edtubbs/dogecoin  # AVX2
-  BRANCH: master
+  URL: https://github.com/edtubbs/dogecoin  #
+  BRANCH: master  #
   PACKAGE_MANAGER_INSTALL: "apt-get update && apt-get install -y"
 
 timeout_in: 120m  # https://cirrus-ci.org/faq/#instance-timed-out
@@ -23,7 +23,7 @@ global_compute_template: &GLOBAL_COMPUTE_TEMPLATE
   image_project: cirrus-images
   image: family/docker-builder
   platform: linux
-  cpu: 8
+  cpu: 16
   memory: 8G
 
 setup_task_template: &SETUP_TASK_TEMPLATE
