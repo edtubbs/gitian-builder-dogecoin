@@ -1,7 +1,7 @@
 ### Global defaults
 env:
-  URL: https://github.com/dogecoin/dogecoin
-  BRANCH: 1.14.4-dev
+  URL: https://github.com/edtubbs/dogecoin
+  COMMIT: 3d7395284d1d3209834c602e74f933efd00d8ee6
   PACKAGE_MANAGER_INSTALL: "apt-get update && apt-get install -y"
 
 timeout_in: 120m  # https://cirrus-ci.org/faq/#instance-timed-out
@@ -32,13 +32,13 @@ setup_task_template: &SETUP_TASK_TEMPLATE
   init_script:
     - ./init/init.sh --force
   setup_script:
-    - ./gitian-build.sh --setup
+    - ./gitian-build.sh --setup -c $COMMIT --url=$URL
 
 build_task_template: &BUILD_TASK_TEMPLATE
   only_if: $CIRRUS_BRANCH =~ 'build_.*'
   << : *SETUP_TASK_TEMPLATE
   build_script:
-    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit -o $OS --build cirrus $BRANCH
+    - ./gitian-build.sh --build -j 8 -m 15000 -c $COMMIT --url=$URL
 
 test_task_template: &TEST_TASK_TEMPLATE
   << : *SETUP_TASK_TEMPLATE
