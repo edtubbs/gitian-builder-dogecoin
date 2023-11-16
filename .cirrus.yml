@@ -1,7 +1,7 @@
 ### Global defaults
 env:
   URL: https://github.com/dogecoin/dogecoin
-  BRANCH: 1.14.4-dev
+  BRANCH: 1.14.7-dev
   PACKAGE_MANAGER_INSTALL: "apt-get update && apt-get install -y"
 
 timeout_in: 120m  # https://cirrus-ci.org/faq/#instance-timed-out
@@ -21,36 +21,37 @@ global_task_template: &GLOBAL_TASK_TEMPLATE
 
 global_compute_template: &GLOBAL_COMPUTE_TEMPLATE
   image_project: cirrus-images
-  image: family/docker-builder
+  image: family/lxc-builder
   platform: linux
   cpu: 8
   memory: 8G
 
 setup_task_template: &SETUP_TASK_TEMPLATE
   prescript:
-    - bash -c "$PACKAGE_MANAGER_INSTALL git"
+    - bash -c "$PACKAGE_MANAGER_INSTALL git qemu-utils python-vm-builder"
+
   init_script:
     - ./init/init.sh --force
   setup_script:
-    - ./gitian-build.sh --setup
+    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit -o $OS --setup $BRANCH --lxc
 
 build_task_template: &BUILD_TASK_TEMPLATE
   only_if: $CIRRUS_BRANCH =~ 'build_.*'
   << : *SETUP_TASK_TEMPLATE
   build_script:
-    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit -o $OS --build cirrus $BRANCH
+    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit -o $OS --setup --build $BRANCH --lxc
 
 test_task_template: &TEST_TASK_TEMPLATE
   << : *SETUP_TASK_TEMPLATE
   test_script:
-    - ./gitian-build.sh -j 8 -m 8192 -u $URL --test --build
-    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit --test --build
+    - ./gitian-build.sh -j 8 -m 8192 -u $URL --test --setup --build
+    - ./gitian-build.sh -j 8 -m 8192 -u $URL --commit --test --build --lxc
 
 task:
   name: 'UBUNTU'
   << : *GLOBAL_TASK_TEMPLATE
   container:
-    image: ubuntu:latest
+    image: ubuntu:focal
 
 task:
   name: 'DEBIAN'
