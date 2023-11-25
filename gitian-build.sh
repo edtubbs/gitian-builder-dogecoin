@@ -266,7 +266,7 @@ if [[ $setup == true ]]; then
   git reset --hard FETCH_HEAD
   git am < "$dirName"/patches/0001-Docker-apt-cacher.patch
 
-   ./bin/make-base-vm --docker --arch amd64 --suite trusty || exit 1
+   ./bin/make-base-vm --docker --arch amd64 --suite focal || exit 1
   "$dirName"/setup/dependencies.sh || exit 1
 
   popd  || exit 1
@@ -331,6 +331,8 @@ if [[ $build == true ]]; then
     echo ""
     echo "Compiling ${VERSION} ${descriptor}"
     echo ""
+    wget https://depends.dogecoincore.org/lief-0.12.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+    cp lief-0.12.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl /tmp/cirrus-ci-build/gitian-builder/inputs/
     ./bin/gbuild -j "$proc" -m "$mem" --commit dogecoin="$COMMIT" --url dogecoin="$url" ../gitian-descriptors/gitian-"$descriptor".yml  || exit 1
     move_build_files
   done
