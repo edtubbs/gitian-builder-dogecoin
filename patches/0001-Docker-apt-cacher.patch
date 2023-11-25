@@ -72,7 +72,7 @@ index 30e4fbf..d6b3ac5 100755
  ENV DEBIAN_FRONTEND=noninteractive
 -RUN echo 'Acquire::http { Proxy "$MIRROR_BASE"; };' > /etc/apt/apt.conf.d/50cacher
 +# DELETE ESM Files: W: Failed to fetch https://esm.ubuntu.com/ubuntu/dists/trusty-infra-security/main/binary-amd64/Packages  Received HTTP code 403 from proxy after CONNECT
-+RUN [ -f /etc/apt/sources.list.d/*esm*.list ] && rm /etc/apt/sources.list.d/*esm*.list
++# RUN [ -f /etc/apt/sources.list.d/*esm*.list ] && rm /etc/apt/sources.list.d/*esm*.list
 +$apt_cacher
  RUN apt-get update && apt-get --no-install-recommends -y install $addpkg
 
